@@ -1,4 +1,7 @@
+from display import display_jobs
 from utils import TABLE_WIDTH, pause
+from scraper import scrape_jobs
+from storage import save_job, load_jobs
 
 def display_menu():
     print("=" * TABLE_WIDTH)
@@ -25,11 +28,29 @@ while True:
         choice = input("Enter your choice: ")
 
         if choice == "1":
-            print("Finding jobs...")
+
+            jobs = scrape_jobs()
+
+            if jobs:
+                save_job(jobs)
+                print(f"{len(jobs)} jobs found and saved successfully.")
+
+            else:
+                print("No jobs found.")
+
             pause()
 
         elif choice == "2":
-            print("Viewing saved jobs...")
+            
+            jobs = load_jobs()
+
+            if jobs:
+                print(f"Found {len(jobs)} saved jobs.")
+                display_jobs(jobs)
+
+            else:
+                print("No saved jobs found.")
+                
             pause()
 
         elif choice == "3":
