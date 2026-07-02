@@ -59,3 +59,6 @@ while True:
     except KeyboardInterrupt:
         print("\nProgram interrupted. Goodbye!")
         break
+
+if __name__ == "__main__":
+    display_menu()
