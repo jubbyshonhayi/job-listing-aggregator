@@ -3,7 +3,7 @@ import os
 
 CSV_FILE = os.path.join("data", "jobs.csv")
 
-def save_job(jobs):
+def save_jobs(jobs):
     """Save jobs to a CSV file."""
 
     try:

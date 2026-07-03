@@ -1,8 +1,96 @@
 from display import display_jobs
+from filter import filter_jobs
 from utils import TABLE_WIDTH, pause
 from scraper import scrape_jobs
-from storage import save_job, load_jobs
+from storage import save_jobs, load_jobs
+from search import search_jobs
 
+def handle_find_jobs():
+    """Handle finding and saving jobs."""
+    jobs = scrape_jobs()
+
+    if jobs:
+        save_jobs(jobs)
+        print(f"{len(jobs)} jobs found and saved successfully.")
+
+    else:
+        print("No jobs found.")
+
+    pause()
+
+def handle_view_saved_jobs():
+    """Handle viewing saved jobs."""
+
+    jobs = load_jobs()
+
+    if jobs:
+        print(f"Found {len(jobs)} saved jobs.")
+        display_jobs(jobs)
+
+    else:
+        print("No saved jobs found.")
+        pause()
+
+
+def handle_search():
+    """Handle searching saved jobs."""
+    keyword = input("Enter search keyword: ")
+
+    jobs = load_jobs()
+    matches = search_jobs(jobs, keyword)
+
+    if matches:
+        print(f"Found {len(matches)} job(s) matching '{keyword}':")
+        display_jobs(matches)
+
+    else:
+        print(f"No jobs found matching '{keyword}'.")
+        pause()
+
+
+def handle_filter():
+    """Handle filtering saved jobs."""
+
+    print("\nFilter jobs by field:\n")
+    print("1. Title")
+    print("2. Company")
+    print("3. Location")
+
+    
+    choice = input("Enter your choice: ")
+
+    if choice == "1":
+        field = "title"
+
+    elif choice == "2":
+        field = "company"
+
+    elif choice == "3":
+        field = "location"
+
+    else:
+        print("Invalid choice.")
+        pause()
+        return
+        
+    jobs = load_jobs()
+
+    value = input(f"Enter value to filter {field} by: ")
+    filtered_jobs = filter_jobs(jobs, field, value)
+
+    if filtered_jobs:
+        print(f"Found {len(filtered_jobs)} job(s) matching '{value}' in '{field}':")
+        display_jobs(filtered_jobs)
+
+    else:
+        print(f"No jobs found matching '{value}' in '{field}'.")
+        pause()
+
+    
+    
+    
+
+    
 def display_menu():
     print("=" * TABLE_WIDTH)
     print("JOB LISTING AGGREGATOR".center(TABLE_WIDTH))
@@ -29,37 +117,16 @@ while True:
 
         if choice == "1":
 
-            jobs = scrape_jobs()
-
-            if jobs:
-                save_job(jobs)
-                print(f"{len(jobs)} jobs found and saved successfully.")
-
-            else:
-                print("No jobs found.")
-
-            pause()
+            handle_find_jobs()
 
         elif choice == "2":
-            
-            jobs = load_jobs()
-
-            if jobs:
-                print(f"Found {len(jobs)} saved jobs.")
-                display_jobs(jobs)
-
-            else:
-                print("No saved jobs found.")
-                
-            pause()
+            handle_view_saved_jobs()
 
         elif choice == "3":
-            print("Searching saved jobs...")
-            pause()
+            handle_search()
 
         elif choice == "4":
-            print("Filtering jobs...")
-            pause()
+            handle_filter()
 
         elif choice == "5":
             print("Sorting jobs...")
@@ -81,5 +148,3 @@ while True:
         print("\nProgram interrupted. Goodbye!")
         break
 
-if __name__ == "__main__":
-    display_menu()

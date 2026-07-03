@@ -59,6 +59,7 @@ def parse_jobs(soup):
 def scrape_jobs():
 
     html = get_page()
+    
     if not html:
         return []
 
