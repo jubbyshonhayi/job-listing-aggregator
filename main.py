@@ -4,6 +4,7 @@ from utils import TABLE_WIDTH, pause
 from scraper import scrape_jobs
 from storage import save_jobs, load_jobs
 from search import search_jobs
+from sort import sort_jobs
 
 def handle_find_jobs():
     """Handle finding and saving jobs."""
@@ -86,12 +87,50 @@ def handle_filter():
         print(f"No jobs found matching '{value}' in '{field}'.")
         pause()
 
+
+def handle_sort():
+    """Handle sorting saved jobs."""
+
+    jobs = load_jobs()
     
-    
-    
+    if not jobs:
+        print("No saved jobs to sort.\n")
+        pause()
+        return
+
+    print("\nSort jobs by field:\n")
+    print("1. Title")
+    print("2. Company")
+    print("3. Location")
 
     
+    choice = input("Enter your choice: ")
+
+    if choice == "1":
+        field = "title"
+
+    elif choice == "2":
+        field = "company"
+
+    elif choice == "3":
+        field = "location"
+
+    else:
+        print("Invalid choice.")
+        pause()
+        return
+
+    
+    sorted_jobs = sort_jobs(jobs, field)
+
+    print(f"Jobs sorted by '{field}':")
+    display_jobs(sorted_jobs)
+
+        
+    
 def display_menu():
+    """Display the main menu."""
+
     print("=" * TABLE_WIDTH)
     print("JOB LISTING AGGREGATOR".center(TABLE_WIDTH))
     print("=" * TABLE_WIDTH)
@@ -124,13 +163,15 @@ while True:
 
         elif choice == "3":
             handle_search()
+            
 
         elif choice == "4":
             handle_filter()
+            
 
         elif choice == "5":
-            print("Sorting jobs...")
-            pause()
+            handle_sort()
+            
 
         elif choice == "6":
             print("Managing notifications...")
