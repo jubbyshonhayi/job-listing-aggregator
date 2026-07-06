@@ -6,6 +6,7 @@ from storage import save_jobs, load_jobs
 from search import search_jobs
 from sort import sort_jobs
 from api_jobs import fetch_api_jobs
+from notifications import check_notifications
 
 
 def handle_find_jobs():
@@ -147,6 +148,53 @@ def handle_sort():
     print(f"Jobs sorted by '{field}':")
     display_jobs(sorted_jobs)
 
+
+def handle_notifications():
+    """Handle checking for new job notifications."""
+
+    print("\nChoose job source:\n")
+    print("1. Web Scrapping")
+    print("2. API")
+
+    choice = input("Enter your choice: ")
+
+    if choice == "1":
+        print("Fetching jobs from the website...")
+        new_jobs = scrape_jobs()
+
+    elif choice == "2":
+        print("Fetching jobs from the API...")
+        new_jobs = fetch_api_jobs()
+
+    else:
+        print("Invalid choice.")
+        pause()
+        return
+    
+    old_jobs = load_jobs()
+
+    if not old_jobs:
+        print("No previous job data found.")
+        print("Creating initial job snapshot...")
+
+        save_jobs(new_jobs)
+
+        print("Initial job snapshot created successfully.")
+        pause()
+        return
+
+    notifications = check_notifications(old_jobs, new_jobs)
+
+    if notifications:
+        print(f"\nFound {len(notifications)} new job(s):")
+        display_jobs(notifications)
+
+    else:
+        print("\nNo new jobs found")
+        pause()
+
+    save_jobs(new_jobs)
+
         
     
 def display_menu():
@@ -195,8 +243,7 @@ while True:
             
 
         elif choice == "6":
-            print("Managing notifications...")
-            pause()
+            handle_notifications()
 
         elif choice == "0":
             print("Exiting the program. Goodbye!")
