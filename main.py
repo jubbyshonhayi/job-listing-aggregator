@@ -5,10 +5,30 @@ from scraper import scrape_jobs
 from storage import save_jobs, load_jobs
 from search import search_jobs
 from sort import sort_jobs
+from api_jobs import fetch_api_jobs
+
 
 def handle_find_jobs():
     """Handle finding and saving jobs."""
-    jobs = scrape_jobs()
+
+    print("\nChoose job source:\n")
+    print("1. Web Scraping")
+    print("2. API")
+
+    choice = input("Enter your choice: ")
+
+    if choice == "1":
+        print("Fetching jobs from the website...")
+        jobs = scrape_jobs()
+
+    elif choice == "2":
+        print("Fetching jobs from the API...")
+        jobs = fetch_api_jobs()
+
+    else:
+        print("Invalid choice.")
+        pause()
+        return
 
     if jobs:
         save_jobs(jobs)
@@ -18,6 +38,7 @@ def handle_find_jobs():
         print("No jobs found.")
 
     pause()
+
 
 def handle_view_saved_jobs():
     """Handle viewing saved jobs."""
