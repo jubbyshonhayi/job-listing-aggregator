@@ -49,11 +49,13 @@ Job-Listing-Aggregator/
 ├── sort.py
 ├── storage.py
 ├── utils.py
+├── requirements.txt
 │
 ├── data/
 │   └── jobs.csv
 │
 └── README.md
+
 ```
 
 ---

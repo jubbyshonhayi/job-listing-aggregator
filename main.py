@@ -8,10 +8,9 @@ from sort import sort_jobs
 from api_jobs import fetch_api_jobs
 from notifications import check_notifications
 
-
-def handle_find_jobs():
-    """Handle finding and saving jobs."""
-
+def choose_job_source():
+    """Prompt the user to choose job source."""
+    
     print("\nChoose job source:\n")
     print("1. Web Scraping")
     print("2. API")
@@ -20,24 +19,29 @@ def handle_find_jobs():
 
     if choice == "1":
         print("Fetching jobs from the website...")
-        jobs = scrape_jobs()
+        return scrape_jobs()
 
     elif choice == "2":
         print("Fetching jobs from the API...")
-        jobs = fetch_api_jobs()
+        return fetch_api_jobs()
 
     else:
         print("Invalid choice.")
+        return None
+
+
+def handle_find_jobs():
+    """Handle finding and saving jobs."""
+
+    jobs = choose_job_source()
+
+    if jobs is None:
         pause()
         return
-
-    if jobs:
-        save_jobs(jobs)
-        print(f"{len(jobs)} jobs found and saved successfully.")
-
-    else:
-        print("No jobs found.")
-
+    
+    save_jobs(jobs)
+    
+    print(f"{len(jobs)} jobs found and saved successfully.")
     pause()
 
 
@@ -152,22 +156,9 @@ def handle_sort():
 def handle_notifications():
     """Handle checking for new job notifications."""
 
-    print("\nChoose job source:\n")
-    print("1. Web Scrapping")
-    print("2. API")
+    new_jobs = choose_job_source()
 
-    choice = input("Enter your choice: ")
-
-    if choice == "1":
-        print("Fetching jobs from the website...")
-        new_jobs = scrape_jobs()
-
-    elif choice == "2":
-        print("Fetching jobs from the API...")
-        new_jobs = fetch_api_jobs()
-
-    else:
-        print("Invalid choice.")
+    if new_jobs is None:
         pause()
         return
     
@@ -182,7 +173,7 @@ def handle_notifications():
         print("Initial job snapshot created successfully.")
         pause()
         return
-
+    
     notifications = check_notifications(old_jobs, new_jobs)
 
     if notifications:
@@ -190,7 +181,7 @@ def handle_notifications():
         display_jobs(notifications)
 
     else:
-        print("\nNo new jobs found")
+        print("\nNo new jobs were found.")
         pause()
 
     save_jobs(new_jobs)
